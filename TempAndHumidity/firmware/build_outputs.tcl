@@ -1,7 +1,7 @@
 # NOTE: When describing the paths we use a forward slash, "/", as the path delimiter.
 # If you didn't clone this repo into a C:/Development/KriaKR260Projects folder on your 
 # machine you will need to update the paths below
-set workspace_path "C:/Development/KriaKR260Projects/TempAndHumidity/firmware/kria_hygrometer/outputs"
+set workspace_path "C:/Development/KriaProjects/TempAndHumidity/firmware/kria_hygrometer/outputs"
 set xsa_file "${workspace_path}/hygrometer.xsa"
 set repo_path "C:/Development/device-tree-xlnx"
 

@@ -4,7 +4,7 @@
 
 The fpga project was created in Vivado 2024.2 and the .tcl script to reproduce it was also made with this version. In all the sample code below I will use this version. If you are using a later version, substitute your Vivado version number in where appropriate.
 
-I use a C:\Development folder to keep all my projects in so I will write these instructions as if I cloned this repo into the C:\Development\KriaKR260Projects folder. If you use a different folder, update the sample code below to match your directory structure.
+I use a C:\Development folder to keep all my projects in so I will write these instructions as if I cloned this repo into the C:\Development\KriaProjects folder. If you use a different folder, update the sample code below to match your directory structure.
 
 All of the development was done on Windows except where anything had to be compiled on the Kria board itself (since it is an Arm system). It is possible to set up a cross compile project on WSL to build everything, but that is beyond the scope of this demo.
 
@@ -22,7 +22,7 @@ The fpga project was created in Vivado 2024.2 and the .tcl script to reproduce i
 2. In the Tcl console change to the appropriate directory:
 
 ```
-   cd c:/Development/KriaKR260Projects/KriaAxiDma/firmware
+   cd c:/Development/KriaProjects/KriaAxiDma/firmware
 ```
 
 3. Now recreate the project:
@@ -40,7 +40,7 @@ After that you should be able to create the bit stream and export the hardware t
 When I do it I export the .xsa file as
 
 ```
- C:\Development\KriaKR260Projects\KriaAxiDma\firmware\axi_dma_demo\outputs\axi_dma_demo.xsa
+ C:\Development\KriaProjects\KriaAxiDma\firmware\axi_dma_demo\outputs\axi_dma_demo.xsa
 ```
 
 You may also need to locate the .bin file. If the bit stream creation was successful it wil be in the _axi_dma_demo\axi_dma_demo.runs\impl_1_ directory (or some folder with a similar name). The file name will be _axi_dma_bd_wrapper.bin_. Copy it to the output directory with the .xsa file and rename it to _axi_dma_demo.bin_.
@@ -68,7 +68,7 @@ Open a command prompt (cmd.exe, not PowerShell). Before using the xsct you are g
 First go to your outputs directory with your .xsa file.
 
 ```
-cd C:\Development\KriaKR260Projects\KriaAxiDma\firmware
+cd C:\Development\KriaProjects\KriaAxiDma\firmware
 ```
 
 Next run the batch file to setup your Vitis environment. You may get a file not found message. IO ignored it and everything worked just fine so you should be OK to ignore it to.
