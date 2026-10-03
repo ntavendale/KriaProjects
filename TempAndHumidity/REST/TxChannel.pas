@@ -50,14 +50,22 @@ var
 begin
   channel_name := '/dev/' + TxChannelNames[0];
   buffer_id := 0;
+  // Open file descriptor for character device (/dev/dma_proxy_tx)
+  // that was created when kernel module was loaded
   TxChannels[buffer_id].FileDescriptor := fpOpen(channel_name, O_RDWR);
+
   if TxChannels[buffer_id].FileDescriptor < 1 then
   begin
     WriteLn(Format('Unable to open DMA proxy device file: %s', [channel_name]));
     Result := FALSE;
     Exit;
   end;
+
   try
+    // Can't use virtual memory for dma since the firmware DMA controller is seen by kernel as part of the hardware.
+    // We need to use physical memory. Physical memory isn't allocated/deallocated by the OS using GetMem (or malloc)
+    // since it always exists independent of our application running.
+    // Instead we need to MAP a PHYSICAL address in the memory reserved for the DMA proxy to our Channel Buffers pointer
     TxChannels[buffer_id].ChannelBuffers := PTxChannelBuffers(fpMmap(nil, SizeOf(TTxChannelBuffers), PROT_READ or PROT_WRITE, MAP_SHARED, TxChannels[buffer_id].FileDescriptor, 0));
     if (TxChannels[buffer_id].ChannelBuffers = MAP_FAILED) then 
     begin
@@ -66,16 +74,20 @@ begin
       Exit;
     end;
 
+    // Now we put data in our ChannelBuffers array which will write it to the physical memory
     TxChannels[buffer_id].ChannelBuffers^[0].Length := 4; // 4 bytes only
     TxChannels[buffer_id].ChannelBuffers^[0].Buffer[0] := AData;
 
     // Start the DMA transfer and this call is non-blocking
+    // Use ioctl to send file descriptor to the dma proxy kernel module for our character device.
     ioctl_result := fpIoctl(TxChannels[buffer_id].FileDescriptor, START_XFER, @buffer_id);
     if 0 <> ioctl_result then
       WriteLn(Format('fpIoctl returned: %d', [ioctl_result]));
 
+    // finish up the write
     fpIoctl(TxChannels[buffer_id].FileDescriptor, FINISH_XFER, @buffer_id);  
 
+    // Check status
     if (TxChannels[buffer_id].ChannelBuffers^[0].Status <> psNoError) then
       WriteLn(Format('Proxy tx transfer error %s', [ProxyStatusToString(TxChannels[buffer_id].ChannelBuffers^[0].Status)]));
 

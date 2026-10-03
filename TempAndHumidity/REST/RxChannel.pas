@@ -54,6 +54,8 @@ var
 begin
   channel_name := '/dev/' + RxChannelNames[0];
   buffer_id := 0;
+  // Open file descriptor for character device (/dev/dma_proxy_rx)
+  // that was created when kernel module was loaded
   RxChannels[buffer_id].FileDescriptor := fpOpen(channel_name, O_RDWR);
   if RxChannels[buffer_id].FileDescriptor < 1 then
   begin
@@ -62,6 +64,10 @@ begin
     Exit;
   end;
   try
+    // Can't use virtual memory for dma since the firmware DMA controller is seen by kernel as part of the hardware.
+    // We need to use physical memory. Physical memory isn't allocated/deallocated by the OS using GetMem (or malloc)
+    // since it always exists independent of our application running.
+    // Instead we need to MAP a PHYSICAL address in the memory reserved for the DMA proxy to our Channel Buffers pointer
     RxChannels[buffer_id].ChannelBuffers := PRxChannelBuffers(fpMmap(nil, sizeof(TRxChannelBuffers), PROT_READ or PROT_WRITE, MAP_SHARED, RxChannels[buffer_id].FileDescriptor, 0));
     if (RxChannels[buffer_id].ChannelBuffers = MAP_FAILED) then 
     begin
@@ -73,18 +79,23 @@ begin
     RxChannels[buffer_id].ChannelBuffers^[0].Length := 4; // 4 bytes only
 
     // Start the DMA transfer and this call is non-blocking
+    // Use ioctl to send file descriptor to the dma proxy kernel module for our character device.
     ioctl_result := fpIoctl(RxChannels[buffer_id].FileDescriptor, START_XFER, @buffer_id);
     if 0 <> ioctl_result then
       WriteLn(Format('fpIoctl START_XFER returned: %d', [ioctl_result]));
 
+    // finish up the read
     ioctl_result := fpIoctl(RxChannels[buffer_id].FileDescriptor, FINISH_XFER, @buffer_id);  
+    
     if 0 <> ioctl_result then
       WriteLn(Format('fpIoctl FINISH_XFER returned: %d', [ioctl_result]));
 
     if (RxChannels[buffer_id].ChannelBuffers^[0].Status <> psNoError) then
       WriteLn(Format('Proxy rx transfer error %s', [ProxyStatusToString(RxChannels[buffer_id].ChannelBuffers^[0].Status)]));
 
+    // Now we read data out of our ChannelBuffers array which will read it out of the physical memory
     Result := RxChannels[buffer_id].ChannelBuffers^[0].Buffer[0];
+
     fpMunmap(RxChannels[buffer_id].ChannelBuffers, SizeOf(TRxChannelBuffers));
 
   finally
