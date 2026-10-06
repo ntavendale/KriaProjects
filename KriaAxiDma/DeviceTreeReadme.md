@@ -128,7 +128,7 @@ First we need to add a section for reserving the memory for the proxy buffers. W
 
         dma_proxy_reserved: buffer {
             compatible = "shared-dma-pool";
-            size = <0x0 0x20000000>; /* 512MB */
+            size = <0x0 0x4000000>; /* 64MB */
             alignment = <0x0 0x00001000>; /* 4KB alignment */
             reusable;
         };

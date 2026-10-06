@@ -52,15 +52,8 @@ entity axi_stream_io is
     m_axis_tdata  : out std_logic_vector(FIFO_WIDTH - 1 downto 0);
     m_axis_tkeep  : out std_logic_vector((FIFO_WIDTH / 8) - 1 downto 0) := (others => '1');
     
-    -- PMOD1 OUTPUTS
-    pmod_1_01: out std_logic;
-    pmod_1_02: out std_logic;
-    pmod_1_03: out std_logic;
-    pmod_1_04: out std_logic;
-    pmod_1_07: out std_logic;
-    pmod_1_08: out std_logic;
-    pmod_1_09: out std_logic;
-    pmod_1_10: out std_logic
+    -- PMOD4 OUTPUTS
+    led: out std_logic_vector(7 downto 0)
   );
 end axi_stream_io;
 
@@ -121,14 +114,6 @@ begin
   -- Map the eight element vector to tthe PMOD ports to drive the external peripheral
   -- in this cas a Digilent Pmod 8LD with 8 high brightness LEDs 
   -- https://digilent.com/shop/pmod-8ld-eight-high-brightness-leds/ 
-  pmod_1_01 <= r_led_state(0);
-  pmod_1_02 <= r_led_state(1);
-  pmod_1_03 <= r_led_state(2);
-  pmod_1_04 <= r_led_state(3);
-  
-  pmod_1_07 <= r_led_state(4);
-  pmod_1_08 <= r_led_state(5);
-  pmod_1_09 <= r_led_state(6);
-  pmod_1_10 <= r_led_state(7);    
-     
+  led <= r_led_state;
+    
 end rtl;

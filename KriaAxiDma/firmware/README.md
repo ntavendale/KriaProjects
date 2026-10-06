@@ -92,7 +92,7 @@ You will need to update the pl.dtsi to do two things.
 1. Reserve Memory Buffer For the Proxy Buffers
 1. Add the dma proxy entry
 
-Add this to the top of your file to reserve the memory.
+Add this to the top of your file to reserve the memory. We only need 64MB.
 
 ```
 /* Reserve memory for DMA Proxy Buffers */
@@ -104,7 +104,7 @@ Add this to the top of your file to reserve the memory.
 
         dma_proxy_reserved: buffer {
             compatible = "shared-dma-pool";
-            size = <0x0 0x20000000>; /* 512MB */
+            size = <0x0 0x4000000>; /* 64MB */
             alignment = <0x0 0x00001000>; /* 4KB alignment */
             reusable;
         };
@@ -397,7 +397,7 @@ This is the pl.dtsi file, complete with alterations for proxy-dma, that I used f
 
         dma_proxy_reserved: buffer {
             compatible = "shared-dma-pool";
-            size = <0x0 0x20000000>; /* 512MB */
+            size = <0x0 0x4000000>; /* 64MB - More than enough for a simple FIFO with one read and one write channel */
             alignment = <0x0 0x00001000>; /* 4KB alignment */
             reusable;
         };
