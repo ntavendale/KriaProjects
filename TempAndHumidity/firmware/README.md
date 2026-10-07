@@ -89,7 +89,7 @@ There should now be a pl.dtsi device-tree file in the generate_target directory.
 
 You will need to update the pl.dtsi to do two things.
 
-1. Reserve Memory Buffer For the Proxy Buffers
+1. Reserve Memory Buffer For the Proxy Buffers. 32 MB should be more than enough.
 1. Add the dma proxy entry
 
 Add this to the top of your file to reserve the memory.
@@ -104,7 +104,7 @@ Add this to the top of your file to reserve the memory.
 
         dma_proxy_reserved: buffer {
             compatible = "shared-dma-pool";
-            size = <0x0 0x20000000>; /* 512MB */
+            size = <0x0 0x2000000>; /* 32MB */
             alignment = <0x0 0x00001000>; /* 4KB alignment */
             reusable;
         };
@@ -397,7 +397,7 @@ This is the pl.dtsi file, complete with alterations for proxy-dma, that I used f
 
         dma_proxy_reserved: buffer {
             compatible = "shared-dma-pool";
-            size = <0x0 0x20000000>; /* 512MB */
+            size = <0x0 0x2000000>; /* 32MB */
             alignment = <0x0 0x00001000>; /* 4KB alignment */
             reusable;
         };

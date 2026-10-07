@@ -23,17 +23,29 @@ object fmMain: TfmMain
       Left = 16
       Top = 24
       Width = 505
-      Height = 23
+      Height = 29
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
       TabOrder = 0
       Text = 'http://192.168.9.37'
     end
     object spPort: TSpinEdit
       Left = 527
       Top = 24
-      Width = 98
-      Height = 24
+      Width = 82
+      Height = 31
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
       MaxValue = 65536
       MinValue = 0
+      ParentFont = False
       TabOrder = 1
       Value = 8080
     end
