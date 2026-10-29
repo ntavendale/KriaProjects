@@ -136,7 +136,7 @@ First we need to add a section for reserving the memory for the proxy buffers. W
 };
 ```
 
-But how does mmap know to use this memory instead of some other section of the system memory? It knows, because it will be called with a file descriptor opened against a character device in the /dev directory. Which character device? That is the purpose of the second &amba section that we will add to the file to create a new bus node.
+The purpose of the second &amba section that we will add to the file is to create a new bus node. There are two dma channels, one for reading and one for writing. These channels are controlled by reading and writing to two distinct registers a0000000 & a0000003. To write to these registers from user space apps we need to have files to write to under the /dev directory.
 
 ```
 &amba {
@@ -149,6 +149,8 @@ But how does mmap know to use this memory instead of some other section of the s
 ```
 
 This final section of the file connects the two axi dam channels, &axi_dma 0 & 1, to the two character devices - **/dev/dma_proxy_tx**(for writing) and **/dev/dma_proxy_rx** (for reading) used from moving data in out out of the P/L via DMA.
+
+However, the two character device files will not be visible to user space apps until the kernel module has been loaded.
 
 Once the file is complete we compile it on the kria using dtc. Again see the [README.md](./firmware/README.md) file for more details.
 

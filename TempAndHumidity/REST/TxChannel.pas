@@ -65,7 +65,9 @@ begin
     // Can't use virtual memory for dma since the firmware DMA controller is seen by kernel as part of the hardware.
     // We need to use physical memory. Physical memory isn't allocated/deallocated by the OS using GetMem (or malloc)
     // since it always exists independent of our application running.
-    // Instead we need to MAP a PHYSICAL address in the memory reserved for the DMA proxy to our Channel Buffers pointer
+    // Instead we need to MAP a PHYSICAL address in the memory reserved for the DMA proxy to our Channel Buffers pointer.
+    // Every file has a private_data section. It is initialized on open above. The fpMmap function below sets the private data 
+    //to the address of proxy buffer so that the the kernel module can retrieve it when the file descriptor is passed to fpIoctl.
     TxChannels[buffer_id].ChannelBuffers := PTxChannelBuffers(fpMmap(nil, SizeOf(TTxChannelBuffers), PROT_READ or PROT_WRITE, MAP_SHARED, TxChannels[buffer_id].FileDescriptor, 0));
     if (TxChannels[buffer_id].ChannelBuffers = MAP_FAILED) then 
     begin

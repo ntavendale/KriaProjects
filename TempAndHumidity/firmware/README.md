@@ -118,7 +118,7 @@ Modify the device tree file by adding a dma_proxy entry directly after the dma.
 &amba {
     dma_proxy {
         compatible = "xlnx,dma_proxy";
-        dmas = <&axi_dma 0  &axi_dma 1>;
+        dmas = <&Axi_DMA_Controller 0  &Axi_DMA_Controller 1>;
         dma-names = "dma_proxy_tx", "dma_proxy_rx";
     };
 };
@@ -431,7 +431,7 @@ This is the pl.dtsi file, complete with alterations for proxy-dma, that I used f
 &amba {
 	#address-cells = <2>;
 	#size-cells = <2>;
-	axi_dma: dma@a0000000 {
+	Axi_DMA_Controller: dma@a0000000 {
 		#dma-cells = <1>;
 		clock-names = "m_axi_mm2s_aclk", "m_axi_s2mm_aclk", "s_axi_lite_aclk";
 		clocks = <&zynqmp_clk 71>, <&zynqmp_clk 71>, <&zynqmp_clk 71>;
@@ -461,7 +461,7 @@ This is the pl.dtsi file, complete with alterations for proxy-dma, that I used f
 &amba {
     dma_proxy {
         compatible = "xlnx,dma_proxy";
-        dmas = <&axi_dma 0  &axi_dma 1>;
+        dmas = <&Axi_DMA_Controller 0  &Axi_DMA_Controller 1>;
         dma-names = "dma_proxy_tx", "dma_proxy_rx";
     };
 };
